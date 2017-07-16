@@ -1,3 +1,8 @@
+import vsBasic from "shaders/basic.vs"
+import fsBasic from "shaders/basic.fs"
+
+import audio from "mnf/audio"
+
 class Main {
 
 	constructor(){
@@ -9,33 +14,71 @@ class Main {
 		document.body.appendChild( this.renderer.domElement )
 
 		// create camera
-		this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 )
-		this.camera.position.z = 400
+		this.camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 1000 )
+		this.camera.position.z = 800
 		
-		// create a cube
+		// create a big central Icosahedron
 		let geometry = new THREE.IcosahedronGeometry(100,2)
 		let material = new THREE.MeshBasicMaterial( { color: 0xFF00FF, wireframe:true } )
-		this.mesh = new THREE.Mesh( geometry, material )
-		this.scene.add( this.mesh )
+		this.meshBig = new THREE.Mesh( geometry, material )
+		this.scene.add( this.meshBig )
+
+		// create a small Icosahedron with custom material
+		let customMaterial = new THREE.RawShaderMaterial( { 
+			uniforms: {
+				color: { type: "c", value: new THREE.Color( 0x00ff00 ) }
+			},
+			vertexShader: vsBasic,
+			fragmentShader: fsBasic
+		} )
+		this.meshSmall = new THREE.Mesh( geometry, customMaterial )
+		this.meshSmall.scale.set( 1, 1, 1 )
+		this.scene.add( this.meshSmall )
+
+		this.theta = 0
+		this.phi = 0
+		this.radius = 150
+
+		// if you don't want to hear the music, but keep analysing it, set 'shutup' to 'true'!
+		audio.start( { live: false, shutup: false, showPreview: true } )
+		audio.onBeat.add( this.onBeat )
 
 		window.addEventListener( 'resize', this.onResize, false )
 
 		this.animate()
 	}
 
+	onBeat = () => {
+		console.log( "BEAT!" )
+	}
+
 	// each frame
 	animate = () => {
 		requestAnimationFrame( this.animate )
-		this.mesh.rotation.x += 0.005
-		this.mesh.rotation.y += 0.01
+
+		// on each frame logic
+		this.meshBig.rotation.x += 0.005
+		this.meshBig.rotation.y += 0.01
+
+		this.meshSmall.position.x = Math.cos( this.theta ) * Math.sin( this.phi ) * this.radius
+		this.meshSmall.position.y = Math.sin( this.theta ) * Math.sin( this.phi ) * this.radius
+		this.meshSmall.position.z = Math.cos( this.phi ) * this.radius
+
+		this.theta += .01
+		this.phi += .05
+
+		// play with audio.volume
+		let scale = .1 + .05 * audio.volume
+		this.meshSmall.scale.set( scale, scale, scale )
+
 		this.renderer.render( this.scene, this.camera )
 	}
 
 	// on resize
-	resize = () => {
+	onResize = () => {
 		this.camera.aspect = window.innerWidth / window.innerHeight
 		this.camera.updateProjectionMatrix()
-		renderer.setSize( window.innerWidth, window.innerHeight )
+		this.renderer.setSize( window.innerWidth, window.innerHeight )
 	}
 
 }

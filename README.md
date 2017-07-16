@@ -1,1 +1,1 @@
-# Starter2017 by @makio64
+# Starter2017 by @makioandfloz
