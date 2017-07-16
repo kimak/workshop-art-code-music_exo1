@@ -49,15 +49,12 @@ class Main {
 	}
 
 	onBeat = () => {
-		console.log( "BEAT!" )
 		this.meshSmall.material.uniforms.color.value.r = Math.random()
 	}
 
 	// each frame
 	animate = () => {
 		requestAnimationFrame( this.animate )
-
-		// on each frame logic
 
 		this.meshBig.rotation.x += 0.005
 		this.meshBig.rotation.y += 0.01
