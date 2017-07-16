@@ -50,6 +50,7 @@ class Main {
 
 	onBeat = () => {
 		console.log( "BEAT!" )
+		this.meshSmall.material.uniforms.color.value.r = Math.random()
 	}
 
 	// each frame
@@ -57,8 +58,12 @@ class Main {
 		requestAnimationFrame( this.animate )
 
 		// on each frame logic
+
 		this.meshBig.rotation.x += 0.005
 		this.meshBig.rotation.y += 0.01
+		// play with audio.volume
+		let scale = 1 + .025 * audio.volume
+		this.meshBig.scale.set( scale, scale, scale )
 
 		this.meshSmall.position.x = Math.cos( this.theta ) * Math.sin( this.phi ) * this.radius
 		this.meshSmall.position.y = Math.sin( this.theta ) * Math.sin( this.phi ) * this.radius
@@ -67,8 +72,8 @@ class Main {
 		this.theta += .01
 		this.phi += .05
 
-		// play with audio.volume
-		let scale = .1 + .05 * audio.volume
+		// play with audio.values[ 2 ], the green bar of the preview
+		scale = .1 + .05 * audio.values[ 2 ]
 		this.meshSmall.scale.set( scale, scale, scale )
 
 		this.renderer.render( this.scene, this.camera )
