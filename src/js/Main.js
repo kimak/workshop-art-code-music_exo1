@@ -45,7 +45,7 @@ class Main {
 			wireframe:false,
 			opacity: 0.8,
 			transparent: true,
-			metalness: 0.2,
+			metalness: 0.5,
 			/*map: null,@
 			metalness: 1.0,
 			roughness: 0,
@@ -62,6 +62,8 @@ class Main {
 
 		//this.meshBig = new THREE.Mesh( geometry, material )
 		this.meshBig = new THREE.Mesh( geometry, shaderMaterial )
+		const scaleBig = 1.3;
+		this.meshBig.scale.set( scaleBig, scaleBig, scaleBig )
 		this.scene.add( this.meshBig )
 
 		//this.meshSmall = new THREE.Mesh( new THREE.BoxGeometry(10,10,10), material )
@@ -117,7 +119,7 @@ class Main {
 		this.scene.add( light3 );
 
 		// if you don't want to hear the music, but keep analysing it, set 'shutup' to 'true'!
-		audio.start( { live: false, shutup: true, showPreview: true } )
+		audio.start( { live: false, shutup: false, showPreview: false, playlist: ["audio/galvanize.mp3"] } )
 		audio.onBeat.add( this.onBeat )
 
 		window.addEventListener( 'resize', this.onResize, false )
@@ -142,7 +144,7 @@ class Main {
 		this.meshBig.rotation.x += 0.005
 		this.meshBig.rotation.y += 0.01
 		// play with audio.volume
-		let scale = 1 + .015 * audio.volume
+		let scale = 1 + .025 * audio.volume
 		this.groupElements.scale.set( scale, scale, scale )
 
 		const circleRadius = Math.cos( this.theta ) * Math.sin( this.phi ) * this.radius;
