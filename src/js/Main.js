@@ -88,7 +88,10 @@ class Main {
 			this.groupElements.add( elements[i] )
 		}
 
-
+		var textureCube = new THREE.CubeTextureLoader()
+							.setPath( 'images/' )
+							.load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
+		this.scene.background = textureCube;
 		var light = new THREE.PointLight( 0xFFFFFF ); // soft white light
 		this.scene.add( light );
 		light.position.x=500;
