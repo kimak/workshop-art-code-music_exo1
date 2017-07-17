@@ -16,24 +16,29 @@ class Main {
 		// create camera
 		this.camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 1000 )
 		this.camera.position.z = 800
-		
-		// create a big central Icosahedron
-		let geometry = new THREE.IcosahedronGeometry(100,2)
-		let material = new THREE.MeshBasicMaterial( { color: 0xFF00FF, wireframe:true } )
-		this.meshBig = new THREE.Mesh( geometry, material )
-		this.scene.add( this.meshBig )
 
 		// create a small Icosahedron with custom material
-		let customMaterial = new THREE.RawShaderMaterial( { 
+		let customMaterial = new THREE.RawShaderMaterial( {
+			wireframe:true,
 			uniforms: {
-				color: { type: "c", value: new THREE.Color( 0x00ff00 ) }
+				color: { type: "c", value: new THREE.Color( 0x00ff00 ) },
+				time:  { type: "f", value: 1 },
+				volume: { type: "f", value: 0 },
 			},
 			vertexShader: vsBasic,
 			fragmentShader: fsBasic
 		} )
+
+		// create a big central Icosahedron
+		let geometry = new THREE.IcosahedronGeometry(100,2)
+		let material = new THREE.MeshBasicMaterial( { color: 0xFF00FF, wireframe:true } )
+		//this.meshBig = new THREE.Mesh( geometry, material )
+		this.meshBig = new THREE.Mesh( geometry, customMaterial )
+		this.scene.add( this.meshBig )
+
 		this.meshSmall = new THREE.Mesh( geometry, customMaterial )
 		this.meshSmall.scale.set( 1, 1, 1 )
-		this.scene.add( this.meshSmall )
+		//this.scene.add( this.meshSmall )
 
 		this.theta = 0
 		this.phi = 0
@@ -55,6 +60,9 @@ class Main {
 	// each frame
 	animate = () => {
 		requestAnimationFrame( this.animate )
+
+		this.meshSmall.material.uniforms.time.value+=0.05;
+		this.meshSmall.material.uniforms.volume.value=audio.volume*50;
 
 		this.meshBig.rotation.x += 0.005
 		this.meshBig.rotation.y += 0.01
