@@ -108,6 +108,7 @@ uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
 
 attribute vec3 position;
+varying vec3 vposition;
 attribute vec3 normal;
 
 uniform float time;
@@ -117,5 +118,6 @@ void main() {
 	vec3 offset = position + vec3(time, 1., 1.);
 	//vec3 vol = vec3(volume, 1., 1.);
 	vec3 pos = position + snoise(offset)*volume*normal;
+	vposition= pos;
 	gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
 }

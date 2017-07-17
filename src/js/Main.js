@@ -1,5 +1,6 @@
 import vsBasic from "shaders/basic.vs"
 import fsBasic from "shaders/basic.fs"
+import vsMinimal from "shaders/minimal.vs"
 import MeshCustomMaterial from "MeshCustomMaterial";
 
 import audio from "mnf/audio";
@@ -73,13 +74,22 @@ class Main {
 		this.radius = 150
 
 
-		const amplitude = 300;
+
 		this.groupElements = new THREE.Group();
 		this.scene.add(this.groupElements);
-		const elementMaterial = new THREE.MeshBasicMaterial( { color: 0xCCCCCC, wireframe:false } );
-		for (var i = 0; i < 20; i++) {
-			elements[i] = new THREE.Mesh( new THREE.OctahedronGeometry( 5, 0 ),
-				elementMaterial
+		//this.elementMaterial = new THREE.MeshBasicMaterial( { color: 0xCCCCCC, wireframe:false } );
+		this.elementMaterial = new THREE.RawShaderMaterial( {
+			wireframe:false,
+			uniforms: {
+				color: { type: "c", value: new THREE.Color( 0xFFFFFF ) },
+			},
+			vertexShader: vsMinimal,
+			fragmentShader: fsBasic
+		} );
+		const amplitude = 300;
+		for (var i = 0; i < 30; i++) {
+			elements[i] = new THREE.Mesh( new THREE.OctahedronGeometry( 6, 0 ),
+				this.elementMaterial
 				//customMaterial
 			)
 			elements[i].position.x = Math.random()*amplitude - Math.random()*amplitude
@@ -116,7 +126,7 @@ class Main {
 	}
 
 	onBeat = () => {
-		//this.meshBig.material.uniforms.color.value.r = Math.random()
+		this.elementMaterial.uniforms.color.value.r = Math.random()
 	}
 
 	// each frame
