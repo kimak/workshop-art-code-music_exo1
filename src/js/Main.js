@@ -4,6 +4,8 @@ import vsMinimal from "shaders/minimal.vs"
 import MeshCustomMaterial from "MeshCustomMaterial";
 
 import audio from "mnf/audio";
+import {TweenLite} from "gsap";
+
 const elements = [];
 
 class Main {
@@ -129,6 +131,11 @@ class Main {
 
 	onBeat = () => {
 		this.elementMaterial.uniforms.color.value.r = Math.random()
+
+		let scale = 1 + .025 * audio.volume*10;
+		TweenLite.to(this.groupElements.scale, 0.2, { x: scale, y: scale, z: scale, onComplete:()=>{
+			TweenLite.to(this.groupElements.scale, 1, { x: 1, y: 1, z: 1});
+		} });
 	}
 
 	// each frame
@@ -145,7 +152,7 @@ class Main {
 		this.meshBig.rotation.y += 0.01
 		// play with audio.volume
 		let scale = 1 + .025 * audio.volume
-		this.groupElements.scale.set( scale, scale, scale )
+		//this.groupElements.scale.set( scale, scale, scale )
 
 		const circleRadius = Math.cos( this.theta ) * Math.sin( this.phi ) * this.radius;
 		/*this.meshSmall.position.x = circleRadius
